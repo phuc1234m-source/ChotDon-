@@ -1,51 +1,97 @@
-using System.Collections.Generic;   
-using UnityEngine;                 
+using System.Collections.Generic;
+using UnityEngine;
 
-public class RoadSpawner : MonoBehaviour   
+public class RoadSpawner : MonoBehaviour
 {
-    public GameObject roadPrefab;     
+    public GameObject roadStraightPrefab;
+    public GameObject intersectionPrefab;
 
-    public float scrollSpeed = 3f;    
-    public int chunksOnScreen = 5;    
-    private float chunkHeight = 4f;   
+    [Range(0f, 1f)]
+    public float intersectionChance = 0.08f;
+
+    public float scrollSpeed = 5f;
+    public int chunksOnScreen = 6;
+
     private List<GameObject> activeChunks = new List<GameObject>();
+
+    private bool lastWasIntersection = false;
+
+    float bottomOfScreen = -7.5f;
+
+    SideEnvironmentSpawner sideSpawner;
 
     void Start()
     {
-        float bottomOfScreen = -7.5f; ; // camera bottom
+        sideSpawner = FindFirstObjectByType<SideEnvironmentSpawner>();
+
+        float spawnY = bottomOfScreen;
+
         for (int i = 0; i < chunksOnScreen; i++)
         {
-            float spawnY = bottomOfScreen + (i * chunkHeight);
-            SpawnChunk(spawnY);
+            GameObject chunk = SpawnChunk(spawnY);
+
+            RoadTile tile = chunk.GetComponent<RoadTile>();
+            spawnY += tile.tileHeight;
         }
     }
 
-    void Update()  
+    void Update()
     {
         MoveChunks();
 
-        if (activeChunks.Count > 0)
-        {
-            GameObject firstChunk = activeChunks[0];
+        if (activeChunks.Count == 0)
+            return;
 
-            if (firstChunk.transform.position.y <= -7.5f)
-            {
-                Destroy(firstChunk);
-                activeChunks.RemoveAt(0);
-                float newYRoadPosition = activeChunks[activeChunks.Count - 1].transform.position.y + chunkHeight;
-                SpawnChunk(newYRoadPosition);
-            }
+        GameObject firstChunk = activeChunks[0];
+        RoadTile firstTile = firstChunk.GetComponent<RoadTile>();
+
+        if (firstChunk.transform.position.y <= bottomOfScreen - firstTile.tileHeight)
+        {
+            Destroy(firstChunk);
+            activeChunks.RemoveAt(0);
+
+            GameObject lastChunk = activeChunks[activeChunks.Count - 1];
+            RoadTile lastTile = lastChunk.GetComponent<RoadTile>();
+
+            float newY = lastChunk.transform.position.y + lastTile.tileHeight;
+
+            SpawnChunk(newY);
         }
     }
-    void SpawnChunk(float yPosition)  
-    {
-        GameObject newChunk = Instantiate(roadPrefab, new Vector3(0, yPosition, 0), Quaternion.identity);
-        newChunk.layer = LayerMask.NameToLayer("Background");
-        activeChunks.Add(newChunk);
 
+    GameObject SpawnChunk(float yPosition)
+    {
+        GameObject prefab;
+        bool isIntersection = false;
+
+        if (!lastWasIntersection && Random.value < intersectionChance)
+        {
+            prefab = intersectionPrefab;
+            lastWasIntersection = true;
+            isIntersection = true;
+        }
+        else
+        {
+            prefab = roadStraightPrefab;
+            lastWasIntersection = false;
+        }
+
+        GameObject chunk = Instantiate(prefab, new Vector3(0, yPosition, 0), Quaternion.identity);
+
+        chunk.layer = LayerMask.NameToLayer("Background");
+
+        activeChunks.Add(chunk);
+
+        // báo cho SideEnvironmentSpawner
+        if (sideSpawner != null)
+        {
+            sideSpawner.NotifyIntersectionSpawn(isIntersection);
+        }
+
+        return chunk;
     }
 
-    void MoveChunks()   
+    void MoveChunks()
     {
         foreach (GameObject chunk in activeChunks)
         {

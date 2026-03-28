@@ -2,14 +2,21 @@ using UnityEngine;
 
 public class SideEnvironmentSpawner : MonoBehaviour
 {
-    [Header("House Prefabs")]
-    public GameObject[] housePrefabs;
+    [System.Serializable]
+    public class SideLane
+    {
+        public string laneName;
+        public GameObject[] prefabs;
+        public float leftX;
+        public float rightX;
+    }
+
+    [Header("Side Lanes")]
+    public SideLane[] lanes;
 
     [Header("Spawn Settings")]
-    public float spawnY = 8f;            // top of screen
-    public float verticalSpacing = 3f;   // match house height
-    public float leftX = -5f;
-    public float rightX = 5f;
+    public float spawnY = 8f;
+    public float verticalSpacing = 3f;
 
     [Header("Movement")]
     public float moveSpeed = 5f;
@@ -22,8 +29,9 @@ public class SideEnvironmentSpawner : MonoBehaviour
 
     private float spawnTimer;
     private float spawnInterval;
-    private int lastLeftIndex = -1;
-    private int lastRightIndex = -1;
+
+    private int intersectionRowsToSkip = 0;
+
     void Start()
     {
         spawnInterval = verticalSpacing / moveSpeed;
@@ -40,65 +48,59 @@ public class SideEnvironmentSpawner : MonoBehaviour
         }
     }
 
+    public void NotifyIntersectionSpawn(bool isIntersection)
+    {
+        if (isIntersection)
+        {
+            intersectionRowsToSkip = 4;
+        }
+    }
+
     void SpawnRow()
     {
+        if (intersectionRowsToSkip > 0)
+        {
+            intersectionRowsToSkip--;
+            return;
+        }
+
         spawnChance = Mathf.Min(
             spawnChance + densityIncrease * Time.deltaTime,
             maxSpawnChance
         );
 
-        if (Random.value < spawnChance)
-            SpawnHouse(leftX, true);
+        foreach (SideLane lane in lanes)
+        {
+            if (Random.value < spawnChance)
+                SpawnFromLane(lane, true);
 
-        if (Random.value < spawnChance)
-            SpawnHouse(rightX, false);
+            if (Random.value < spawnChance)
+                SpawnFromLane(lane, false);
+        }
     }
 
-    void SpawnHouse(float xPos, bool isLeft)
+    void SpawnFromLane(SideLane lane, bool isLeft)
     {
-        if (housePrefabs.Length == 0) return;
+        if (lane.prefabs.Length == 0) return;
 
-        int newIndex;
+        int randomIndex = Random.Range(0, lane.prefabs.Length);
+        GameObject prefab = lane.prefabs[randomIndex];
 
-        if (housePrefabs.Length == 1)
-        {
-            newIndex = 0;
-        }
-        else
-        {
-            do
-            {
-                newIndex = Random.Range(0, housePrefabs.Length);
-            }
-            while (
-                (isLeft && newIndex == lastLeftIndex) ||
-                (!isLeft && newIndex == lastRightIndex)
-            );
-        }
+        float xPos = isLeft ? lane.leftX : lane.rightX;
 
-        GameObject prefab = housePrefabs[newIndex];
-
-        GameObject house = Instantiate(
+        GameObject obj = Instantiate(
             prefab,
             new Vector3(xPos, spawnY, 0f),
             Quaternion.identity
         );
 
-        // Save memory
-        if (isLeft)
-            lastLeftIndex = newIndex;
-        else
-            lastRightIndex = newIndex;
-
-        // Movement
-        SideObjectMover mover = house.GetComponent<SideObjectMover>();
+        SideObjectMover mover = obj.GetComponent<SideObjectMover>();
         if (mover != null)
             mover.moveSpeed = moveSpeed;
 
-        // Flip left
         if (isLeft)
         {
-            SpriteRenderer sr = house.GetComponent<SpriteRenderer>();
+            SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
             if (sr != null)
                 sr.flipX = true;
         }

@@ -19,7 +19,7 @@ public class CarSpawner : MonoBehaviour
     {
         cam = Camera.main;
         InvokeRepeating(nameof(SpawnCar), 1f, spawnInterval);
-        player = FindObjectOfType<PlayerController>();
+        player = FindFirstObjectByType<PlayerController>();
     }
 
     void SpawnCar()

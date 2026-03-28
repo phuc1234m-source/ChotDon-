@@ -118,5 +118,16 @@ public class PlayerController : MonoBehaviour
         get { return canControl; }
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("Hit: " + other.name);
+
+        if (!canControl) return;
+
+        if (other.GetComponent<CarObstacle>() != null)
+        {
+            GameManager.Instance.GameOver();
+        }
+    }
 }
     

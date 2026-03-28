@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b4ca9528ca711fc4cb6efca72705de88
+guid: 647a3c4791fa90c4780d364c2d5b4fdd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5053355242037159703
-    second: Intersection Road - 512x576px_0
+      213: 3246054827421726859
+    second: Small Tree - 64x128px_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Intersection Road - 512x576px_0
+      name: Small Tree - 64x128px_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 512
-        height: 576
+        x: 9
+        y: 2
+        width: 55
+        height: 123
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 64}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 717ab7d91df112640800000000000000
-      internalID: 5053355242037159703
+      spriteID: b88f9edcaad4c0d20800000000000000
+      internalID: 3246054827421726859
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e8ac8d895a8b9ca4c9ba346dcddb2062
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Intersection Road - 512x576px_0: 5053355242037159703
+      Small Tree - 64x128px_0: 3246054827421726859
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
