@@ -45,6 +45,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Intersection Roads
+    uniqueID: 4163019097
+    locked: 0
   - name: Obstacles
     uniqueID: 1751504487
     locked: 0
@@ -54,5 +57,11 @@ TagManager:
   - name: Player
     uniqueID: 102502119
     locked: 0
+<<<<<<< Updated upstream
+=======
+  - name: Environment
+    uniqueID: 3171451719
+    locked: 0
+>>>>>>> Stashed changes
   m_RenderingLayers:
   - Default
