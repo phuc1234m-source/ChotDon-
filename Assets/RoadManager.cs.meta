@@ -1,2 +1,17 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: c80355d846bb17a4993d60cb6e07bdc7
+=======
+guid: c80355d846bb17a4993d60cb6e07bdc7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - roadStraightPrefab: {fileID: 7982780379461328437, guid: d3938e5d551b0a94ca21060984ac07de, type: 3}
+  - intersectionPrefab: {fileID: 3791680594706497365, guid: 6775024bc51eb0d45a75d4945308d83d, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+>>>>>>> Stashed changes
